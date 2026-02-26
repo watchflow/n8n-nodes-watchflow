@@ -1,0 +1,117 @@
+{
+    "name": "Watchflow Heartbeat Smoke Test",
+    "nodes": [
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                0,
+                0
+            ],
+            "id": "trigger",
+            "name": "When clicking ‘Test workflow’"
+        },
+        {
+            "parameters": {
+                "resource": "heartbeat",
+                "operation": "start",
+                "key": "n8n-smoke-test",
+                "name": "N8N Smoke Test",
+                "interval": "5m"
+            },
+            "type": "watchflow",
+            "typeVersion": 1,
+            "position": [
+                200,
+                0
+            ],
+            "id": "start",
+            "name": "Start Heartbeat",
+            "credentials": {
+                "watchflowApi": {
+                    "id": "test-creds",
+                    "name": "Watchflow account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "heartbeat",
+                "operation": "ping",
+                "key": "n8n-smoke-test",
+                "data": "={ \"status\": \"success\" }"
+            },
+            "type": "watchflow",
+            "typeVersion": 1,
+            "position": [
+                400,
+                -100
+            ],
+            "id": "ping",
+            "name": "Ping Heartbeat",
+            "credentials": {
+                "watchflowApi": {
+                    "id": "test-creds",
+                    "name": "Watchflow account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "heartbeat",
+                "operation": "fail",
+                "key": "n8n-smoke-test",
+                "error": "Something went wrong"
+            },
+            "type": "watchflow",
+            "typeVersion": 1,
+            "position": [
+                400,
+                100
+            ],
+            "id": "fail",
+            "name": "Fail Heartbeat",
+            "credentials": {
+                "watchflowApi": {
+                    "id": "test-creds",
+                    "name": "Watchflow account"
+                }
+            }
+        }
+    ],
+    "pinData": {},
+    "connections": {
+        "When clicking ‘Test workflow’": {
+            "main": [
+                [
+                    {
+                        "node": "Start Heartbeat",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Start Heartbeat": {
+            "main": [
+                [
+                    {
+                        "node": "Ping Heartbeat",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Fail Heartbeat",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": false,
+    "settings": {
+        "executionOrder": "v1"
+    }
+}
