@@ -1,33 +1,53 @@
 {
-    "name": "Watchflow Heartbeat Smoke Test",
+    "name": "Watchflow_Smoke_Test",
     "nodes": [
         {
             "parameters": {},
             "type": "n8n-nodes-base.manualTrigger",
             "typeVersion": 1,
             "position": [
+                -240,
+                96
+            ],
+            "id": "7e8d98b1-920c-4c05-88e7-e47a5d5c09d5",
+            "name": "When clicking ‘Execute workflow’"
+        },
+        {
+            "parameters": {
+                "operation": "start",
+                "key": "Success",
+                "name": "Test Success",
+                "data": "{\"status\": \"Start\"}"
+            },
+            "type": "CUSTOM.watchflow",
+            "typeVersion": 1,
+            "position": [
                 0,
                 0
             ],
-            "id": "trigger",
-            "name": "When clicking ‘Test workflow’"
+            "id": "4f17ca19-78eb-4bca-899e-9e30f9b658bd",
+            "name": "Start job tracking",
+            "credentials": {
+                "watchflowApi": {
+                    "id": "test-creds",
+                    "name": "Watchflow account"
+                }
+            }
         },
         {
             "parameters": {
-                "resource": "heartbeat",
-                "operation": "start",
-                "key": "n8n-smoke-test",
-                "name": "N8N Smoke Test",
-                "interval": "5m"
+                "key": "Success",
+                "name": "Test Success",
+                "data": "{\"status\": \"Done\"}"
             },
-            "type": "watchflow",
+            "type": "CUSTOM.watchflow",
             "typeVersion": 1,
             "position": [
-                200,
+                208,
                 0
             ],
-            "id": "start",
-            "name": "Start Heartbeat",
+            "id": "e75dfacd-e0ec-463a-bed1-52a8c7c64eeb",
+            "name": "Mark job as successful",
             "credentials": {
                 "watchflowApi": {
                     "id": "test-creds",
@@ -37,19 +57,19 @@
         },
         {
             "parameters": {
-                "resource": "heartbeat",
-                "operation": "ping",
-                "key": "n8n-smoke-test",
-                "data": "={ \"status\": \"success\" }"
+                "operation": "start",
+                "key": "Error",
+                "name": "Test Error",
+                "data": "{\"status\": \"Start\"}"
             },
-            "type": "watchflow",
+            "type": "CUSTOM.watchflow",
             "typeVersion": 1,
             "position": [
-                400,
-                -100
+                0,
+                192
             ],
-            "id": "ping",
-            "name": "Ping Heartbeat",
+            "id": "035e9f47-b861-4ecb-b10c-7af0c9c64201",
+            "name": "Start job tracking1",
             "credentials": {
                 "watchflowApi": {
                     "id": "test-creds",
@@ -59,19 +79,19 @@
         },
         {
             "parameters": {
-                "resource": "heartbeat",
                 "operation": "fail",
-                "key": "n8n-smoke-test",
-                "error": "Something went wrong"
+                "key": "Error",
+                "name": "Test Error",
+                "data": "{\"status\": \"Error\"}"
             },
-            "type": "watchflow",
+            "type": "CUSTOM.watchflow",
             "typeVersion": 1,
             "position": [
-                400,
-                100
+                208,
+                192
             ],
-            "id": "fail",
-            "name": "Fail Heartbeat",
+            "id": "574cce20-fdd6-42b1-86b9-119bb86fca60",
+            "name": "Mark job as failed",
             "credentials": {
                 "watchflowApi": {
                     "id": "test-creds",
@@ -82,27 +102,38 @@
     ],
     "pinData": {},
     "connections": {
-        "When clicking ‘Test workflow’": {
+        "When clicking ‘Execute workflow’": {
             "main": [
                 [
                     {
-                        "node": "Start Heartbeat",
+                        "node": "Start job tracking",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Start job tracking1",
                         "type": "main",
                         "index": 0
                     }
                 ]
             ]
         },
-        "Start Heartbeat": {
+        "Start job tracking": {
             "main": [
                 [
                     {
-                        "node": "Ping Heartbeat",
+                        "node": "Mark job as successful",
                         "type": "main",
                         "index": 0
-                    },
+                    }
+                ]
+            ]
+        },
+        "Start job tracking1": {
+            "main": [
+                [
                     {
-                        "node": "Fail Heartbeat",
+                        "node": "Mark job as failed",
                         "type": "main",
                         "index": 0
                     }
@@ -113,5 +144,12 @@
     "active": false,
     "settings": {
         "executionOrder": "v1"
-    }
+    },
+    "versionId": "19ba78f7-7521-46d9-9ddf-bb0dc5b91274",
+    "meta": {
+        "templateCredsSetupCompleted": true,
+        "instanceId": "21794dacffb2aa7bed5532fb4874f3eb629f68f723fcbcdab3a80d78449d533a"
+    },
+    "id": "9m5zTWn7aQtdoIhG",
+    "tags": []
 }
