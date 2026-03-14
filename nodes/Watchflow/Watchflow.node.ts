@@ -4,6 +4,8 @@ import {
     INodeType,
     INodeTypeDescription,
     NodeConnectionType,
+    NodeApiError,
+    JsonObject,
 } from 'n8n-workflow';
 
 import { ApiHelper } from './modules/ApiHelper';
@@ -154,10 +156,10 @@ export class Watchflow implements INodeType {
                 }
             } catch (error) {
                 if (this.continueOnFail()) {
-                    returnData.push({ json: { error: (error as any).message } });
+                    returnData.push({ json: { error: (error as any).message }, pairedItem: { item: i } });
                     continue;
                 }
-                throw error;
+                throw new NodeApiError(this.getNode(), error as JsonObject, { itemIndex: i });
             }
         }
 

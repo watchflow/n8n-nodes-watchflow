@@ -1,27 +1,28 @@
 import {
     IExecuteFunctions,
     IDataObject,
+    IHttpRequestOptions,
+    IHttpRequestMethods,
 } from 'n8n-workflow';
 
 export class ApiHelper {
     constructor(private executeFunctions: IExecuteFunctions) { }
 
     async request(
-        method: string,
+        method: IHttpRequestMethods,
         url: string,
         body?: IDataObject,
         headers: IDataObject = {},
         option: IDataObject = {},
     ): Promise<any> {
-        const options: any = {
+        const options: IHttpRequestOptions = {
             url: `https://api.watchflow.io/heartbeat${url}`,
-            method,
+            method: method,
             body,
             headers: {
                 'Content-Type': 'application/json',
                 ...headers,
             },
-            json: true,
             ...option,
         };
 
