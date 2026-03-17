@@ -51,6 +51,10 @@ export async function executeHeartbeat(
     }
 
     const responseData = await apiHelper.request('POST', endpoint, body);
+    const executionData = this.helpers.returnJsonArray(responseData);
 
-    return this.helpers.returnJsonArray(responseData);
+    return executionData.map((item) => ({
+        ...item,
+        pairedItem: { item: itemIndex },
+    }));
 }
