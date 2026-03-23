@@ -48,8 +48,7 @@ jobs:
           git add package.json
           git commit -m "NPM Publish from CI/CD [ci skip]" || true
 
-      - uses: ad-m/github-push-action@master
-        with:
-          tags: false
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+      - name: Pull and Push changes
+        run: |
+          git pull --rebase origin main
+          git push origin main
