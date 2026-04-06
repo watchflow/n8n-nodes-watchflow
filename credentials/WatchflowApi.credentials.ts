@@ -7,7 +7,7 @@ import {
 
 export class WatchflowApi implements ICredentialType {
   name = "watchflowApi";
-  displayName = "Watchflow API";
+  displayName = "Watchflow (n8n Monitoring Suite) API";
   documentationUrl = "https://www.watchflow.io/api/";
   properties: INodeProperties[] = [
     {

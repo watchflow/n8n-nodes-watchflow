@@ -1,6 +1,6 @@
 # @watchflow/n8n-nodes-watchflow
 
-This is an n8n community node for [Watchflow.io](https://www.watchflow.io/). It allows you to send heartbeats from your n8n workflows to monitor their health and execution time.
+Watchflow (n8n Monitoring Suite) is an n8n community node for [Watchflow.io](https://www.watchflow.io/). It allows you to send heartbeats from your n8n workflows to monitor their health and execution time.
 
 ## Installation
 

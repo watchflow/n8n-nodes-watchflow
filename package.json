@@ -1,11 +1,12 @@
 {
   "name": "@watchflow/n8n-nodes-watchflow",
-  "version": "0.3.0",
-  "description": "n8n node for Watchflow.io",
+  "version": "0.4.0",
+  "description": "Watchflow (n8n Monitoring Suite) - n8n node for Watchflow.io",
   "keywords": [
     "watchflow",
     "heartbeat",
     "monitoring",
+    "monitoring-suite",
     "n8n-community-node-package"
   ],
   "homepage": "https://www.watchflow.io/",
