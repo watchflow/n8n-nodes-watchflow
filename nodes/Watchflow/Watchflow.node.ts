@@ -13,14 +13,14 @@ import { executeHeartbeat } from './modules/Heartbeat';
 
 export class Watchflow implements INodeType {
     description: INodeTypeDescription = {
-        displayName: 'Watchflow',
+        displayName: 'Watchflow (n8n Monitoring Suite)',
         name: 'watchflow',
         icon: 'file:watchflow.svg',
         group: ['transform'],
         version: 1,
         description: 'Heartbeat monitoring for your cron jobs and scheduled tasks.',
         defaults: {
-            name: 'Watchflow',
+            name: 'Watchflow (n8n Monitoring Suite)',
         },
         inputs: [NodeConnectionType.Main],
         outputs: [NodeConnectionType.Main],
