@@ -1,6 +1,7 @@
 # @watchflow/n8n-nodes-watchflow
 
-This is an n8n community node for [Watchflow.io](https://www.watchflow.io/). It allows you to send heartbeats from your n8n workflows to monitor their health and execution time.
+Watchflow (n8n Monitoring Suite) is an n8n community node for [Watchflow.io](https://www.watchflow.io/). It allows you to send heartbeats from your n8n workflows to monitor their health and execution time.
+
 
 ## Installation
 
@@ -28,9 +29,7 @@ Monitor your scheduled tasks and cron jobs.
 - **Additional Data**: Custom metrics or metadata as a JSON object.
 - **Error Message**: Description of why the job failed (only for Error operation).
 
-## Local Development
-
-See [LOCAL-DEVELOPMENT.md](./LOCAL-DEVELOPMENT.md) for instructions on how to run and test this node locally using Docker.
+📚 **[Learn n8n monitoring best practices](https://www.watchflow.io/use-cases/n8n-monitoring/)**
 
 ## License
 
