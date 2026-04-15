@@ -1,6 +1,6 @@
 {
   "name": "@watchflow/n8n-nodes-watchflow",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Watchflow (n8n Monitoring Suite) - n8n node for Watchflow.io",
   "keywords": [
     "watchflow",
