@@ -19,6 +19,7 @@ export class Watchflow implements INodeType {
         group: ['transform'],
         version: 1,
         description: 'Heartbeat monitoring for your cron jobs and scheduled tasks.',
+        subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
         defaults: {
             name: 'Watchflow (n8n Monitoring Suite)',
         },
@@ -56,6 +57,12 @@ export class Watchflow implements INodeType {
                 },
                 options: [
                     {
+                        name: 'Error',
+                        value: 'fail',
+                        action: 'Mark job as failed',
+                        description: 'Mark job as failed with error message',
+                    },
+                    {
                         name: 'Ping',
                         value: 'ping',
                         action: 'Mark job as successful',
@@ -66,12 +73,6 @@ export class Watchflow implements INodeType {
                         value: 'start',
                         action: 'Start job tracking',
                         description: 'Start job tracking for duration measurement',
-                    },
-                    {
-                        name: 'Error',
-                        value: 'fail',
-                        action: 'Mark job as failed',
-                        description: 'Mark job as failed with error message',
                     },
                 ],
                 default: 'ping',
