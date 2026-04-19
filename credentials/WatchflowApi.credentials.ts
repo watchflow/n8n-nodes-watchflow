@@ -2,12 +2,14 @@ import {
   IAuthenticateGeneric,
   ICredentialTestRequest,
   ICredentialType,
+  Icon,
   INodeProperties,
 } from "n8n-workflow";
 
 export class WatchflowApi implements ICredentialType {
   name = "watchflowApi";
   displayName = "Watchflow (n8n Monitoring Suite) API";
+  icon: Icon = "file:watchflow.svg";
   documentationUrl = "https://www.watchflow.io/api/";
   properties: INodeProperties[] = [
     {

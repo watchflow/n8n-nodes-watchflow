@@ -2,6 +2,7 @@ import {
     IExecuteFunctions,
     INodeExecutionData,
     IDataObject,
+    NodeOperationError,
 } from 'n8n-workflow';
 
 import { ApiHelper } from './ApiHelper';
@@ -41,8 +42,8 @@ export async function executeHeartbeat(
     if (typeof data === 'string') {
         try {
             data = JSON.parse(data);
-        } catch (e) {
-            // If it's not valid JSON, leave it as is or handle accordingly
+        } catch (error) {
+            throw new NodeOperationError(this.getNode(), 'The "Additional Data" field must be a valid JSON object.', { itemIndex });
         }
     }
 
