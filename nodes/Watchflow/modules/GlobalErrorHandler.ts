@@ -18,6 +18,7 @@ export async function executeGlobalErrorHandler(
 
     const body: IDataObject = {
         key: workflowId,
+        source: 'n8n_error_trigger',
     };
 
     if (workflowName) { body.name = workflowName; }

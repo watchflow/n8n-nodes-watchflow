@@ -41,19 +41,41 @@ export class Watchflow implements INodeType {
                 noDataExpression: true,
                 options: [
                     {
-                        name: 'Heartbeat',
+                        name: 'Workflow Monitoring (Recommended)',
+                        value: 'workflowMonitoring',
+                    },
+                    {
+                        name: 'Generic Heartbeat (Advanced)',
                         value: 'heartbeat',
                     },
+                ],
+                default: 'workflowMonitoring',
+            },
+            {
+                displayName: 'Operation',
+                name: 'operation',
+                type: 'options',
+                noDataExpression: true,
+                displayOptions: {
+                    show: {
+                        resource: ['workflowMonitoring'],
+                    },
+                },
+                options: [
                     {
-                        name: 'Global Error Handler',
-                        value: 'globalErrorHandler',
+                        name: 'Report a Failed Run',
+                        value: 'reportFailure',
+                        action: 'Report a failed run',
+                        description: 'Place behind the global Error Trigger; pulls workflow and error automatically',
                     },
                     {
-                        name: 'Workflow Heartbeat',
-                        value: 'workflowHeartbeat',
+                        name: 'Report a Successful Run',
+                        value: 'reportSuccess',
+                        action: 'Report a successful run',
+                        description: 'Place at the end of the workflow; heartbeat plus your metrics',
                     },
                 ],
-                default: 'heartbeat',
+                default: 'reportFailure',
             },
             {
                 displayName: 'Operation',
@@ -67,21 +89,21 @@ export class Watchflow implements INodeType {
                 },
                 options: [
                     {
-                        name: 'Error',
-                        value: 'fail',
-                        action: 'Mark job as failed',
-                        description: 'Mark job as failed with error message',
-                    },
-                    {
-                        name: 'Ping',
+                        name: 'Send a Success Ping',
                         value: 'ping',
-                        action: 'Mark job as successful',
-                        description: 'Simple ping to mark job as successful',
+                        action: 'Send a success ping',
+                        description: 'Simple ping to mark the job as successful',
                     },
                     {
-                        name: 'Start',
+                        name: 'Send a Failure Ping',
+                        value: 'fail',
+                        action: 'Send a failure ping',
+                        description: 'Mark the job as failed with an error message',
+                    },
+                    {
+                        name: 'Send a Start Ping',
                         value: 'start',
-                        action: 'Start job tracking',
+                        action: 'Send a start ping',
                         description: 'Start job tracking for duration measurement',
                     },
                 ],
@@ -150,6 +172,18 @@ export class Watchflow implements INodeType {
                 description: 'Custom metrics or metadata (JSON object)',
             },
             {
+                displayName: 'Connect an <b>Error Trigger</b> node to this node. Add the Error Trigger to your workflow (or set it as the workflow\'s error workflow) so the failed workflow and its error message are pulled in automatically.',
+                name: 'reportFailureNotice',
+                type: 'notice',
+                default: '',
+                displayOptions: {
+                    show: {
+                        resource: ['workflowMonitoring'],
+                        operation: ['reportFailure'],
+                    },
+                },
+            },
+            {
                 displayName: 'Workflow ID',
                 name: 'workflowId',
                 type: 'string',
@@ -157,7 +191,8 @@ export class Watchflow implements INodeType {
                 required: true,
                 displayOptions: {
                     show: {
-                        resource: ['globalErrorHandler'],
+                        resource: ['workflowMonitoring'],
+                        operation: ['reportFailure'],
                     },
                 },
                 description: 'Workflow ID from the Error Trigger, used as the monitor key',
@@ -169,7 +204,8 @@ export class Watchflow implements INodeType {
                 default: '={{ $json.workflow.name }}',
                 displayOptions: {
                     show: {
-                        resource: ['globalErrorHandler'],
+                        resource: ['workflowMonitoring'],
+                        operation: ['reportFailure'],
                     },
                 },
                 description: 'Workflow name from the Error Trigger, used as the monitor label',
@@ -181,26 +217,47 @@ export class Watchflow implements INodeType {
                 default: '={{ $json.execution.error.message }}',
                 displayOptions: {
                     show: {
-                        resource: ['globalErrorHandler'],
+                        resource: ['workflowMonitoring'],
+                        operation: ['reportFailure'],
                     },
                 },
                 description: 'Error message from the Error Trigger to log',
             },
             {
-                displayName: 'Properties',
+                displayName: 'Add your own metrics to send with each successful run, e.g. how many items were processed. Each value supports expressions, so you can pull dynamic data from the workflow. These show up on the monitor in Watchflow.',
+                name: 'reportSuccessNotice',
+                type: 'notice',
+                default: '',
+                displayOptions: {
+                    show: {
+                        resource: ['workflowMonitoring'],
+                        operation: ['reportSuccess'],
+                    },
+                },
+            },
+            {
+                displayName: 'Custom Properties',
                 name: 'properties',
                 type: 'fixedCollection',
                 typeOptions: {
                     multipleValues: true,
                 },
-                default: {},
+                default: {
+                    property: [
+                        {
+                            name: 'itemsProcessed',
+                            value: '={{ $input.all().length }}',
+                        },
+                    ],
+                },
                 placeholder: 'Add Property',
                 displayOptions: {
                     show: {
-                        resource: ['workflowHeartbeat'],
+                        resource: ['workflowMonitoring'],
+                        operation: ['reportSuccess'],
                     },
                 },
-                description: 'Custom data sent with the heartbeat. Each value supports expressions.',
+                description: 'Custom metrics or metadata sent with the heartbeat. Each value supports expressions for dynamic data. Remove the default row if you do not need it.',
                 options: [
                     {
                         name: 'property',
@@ -211,14 +268,16 @@ export class Watchflow implements INodeType {
                                 name: 'name',
                                 type: 'string',
                                 default: '',
-                                description: 'Name of the property',
+                                placeholder: 'e.g. itemsProcessed',
+                                description: 'Name of the metric as it appears in Watchflow',
                             },
                             {
                                 displayName: 'Value',
                                 name: 'value',
                                 type: 'string',
                                 default: '',
-                                description: 'Value of the property (supports expressions for dynamic values)',
+                                placeholder: '={{ $input.all().length }}',
+                                description: 'Value of the metric. Supports expressions, e.g. ={{ $input.all().length }} for the number of incoming items',
                             },
                         ],
                     },
@@ -239,12 +298,15 @@ export class Watchflow implements INodeType {
                 if (resource === 'heartbeat') {
                     const result = await executeHeartbeat.call(this, apiHelper, i);
                     returnData.push(...result);
-                } else if (resource === 'globalErrorHandler') {
-                    const result = await executeGlobalErrorHandler.call(this, apiHelper, i);
-                    returnData.push(...result);
-                } else if (resource === 'workflowHeartbeat') {
-                    const result = await executeWorkflowHeartbeat.call(this, apiHelper, i);
-                    returnData.push(...result);
+                } else if (resource === 'workflowMonitoring') {
+                    const operation = this.getNodeParameter('operation', i) as string;
+                    if (operation === 'reportFailure') {
+                        const result = await executeGlobalErrorHandler.call(this, apiHelper, i);
+                        returnData.push(...result);
+                    } else if (operation === 'reportSuccess') {
+                        const result = await executeWorkflowHeartbeat.call(this, apiHelper, i);
+                        returnData.push(...result);
+                    }
                 }
             } catch (error) {
                 if (this.continueOnFail()) {

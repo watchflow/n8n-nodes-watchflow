@@ -16,7 +16,8 @@ export async function executeWorkflowHeartbeat(
 
     const body: IDataObject = {
         key: workflow.id,
-        interval: 'auto',
+        interval: 'activity_profile',
+        source: 'heartbeat',
     };
 
     if (workflow.name) { body.name = workflow.name; }
