@@ -10,6 +10,8 @@ import {
 
 import { ApiHelper } from './modules/ApiHelper';
 import { executeHeartbeat } from './modules/Heartbeat';
+import { executeGlobalErrorHandler } from './modules/GlobalErrorHandler';
+import { executeWorkflowHeartbeat } from './modules/WorkflowHeartbeat';
 
 export class Watchflow implements INodeType {
     description: INodeTypeDescription = {
@@ -41,6 +43,14 @@ export class Watchflow implements INodeType {
                     {
                         name: 'Heartbeat',
                         value: 'heartbeat',
+                    },
+                    {
+                        name: 'Global Error Handler',
+                        value: 'globalErrorHandler',
+                    },
+                    {
+                        name: 'Workflow Heartbeat',
+                        value: 'workflowHeartbeat',
                     },
                 ],
                 default: 'heartbeat',
@@ -139,6 +149,81 @@ export class Watchflow implements INodeType {
                 },
                 description: 'Custom metrics or metadata (JSON object)',
             },
+            {
+                displayName: 'Workflow ID',
+                name: 'workflowId',
+                type: 'string',
+                default: '={{ $json.workflow.id }}',
+                required: true,
+                displayOptions: {
+                    show: {
+                        resource: ['globalErrorHandler'],
+                    },
+                },
+                description: 'Workflow ID from the Error Trigger, used as the monitor key',
+            },
+            {
+                displayName: 'Workflow Name',
+                name: 'workflowName',
+                type: 'string',
+                default: '={{ $json.workflow.name }}',
+                displayOptions: {
+                    show: {
+                        resource: ['globalErrorHandler'],
+                    },
+                },
+                description: 'Workflow name from the Error Trigger, used as the monitor label',
+            },
+            {
+                displayName: 'Error Message',
+                name: 'errorMessage',
+                type: 'string',
+                default: '={{ $json.execution.error.message }}',
+                displayOptions: {
+                    show: {
+                        resource: ['globalErrorHandler'],
+                    },
+                },
+                description: 'Error message from the Error Trigger to log',
+            },
+            {
+                displayName: 'Properties',
+                name: 'properties',
+                type: 'fixedCollection',
+                typeOptions: {
+                    multipleValues: true,
+                },
+                default: {},
+                placeholder: 'Add Property',
+                displayOptions: {
+                    show: {
+                        resource: ['workflowHeartbeat'],
+                    },
+                },
+                description: 'Custom data sent with the heartbeat. Each value supports expressions.',
+                options: [
+                    {
+                        name: 'property',
+                        displayName: 'Property',
+                        values: [
+                            {
+                                displayName: 'Name',
+                                name: 'name',
+                                type: 'string',
+                                default: '',
+                                description: 'Name of the property',
+                            },
+                            {
+                                displayName: 'Value',
+                                name: 'value',
+                                type: 'string',
+                                default: '',
+                                description: 'Value of the property (supports expressions for dynamic values)',
+                            },
+                        ],
+                    },
+                ],
+            },
         ],
     };
 
@@ -153,6 +238,12 @@ export class Watchflow implements INodeType {
 
                 if (resource === 'heartbeat') {
                     const result = await executeHeartbeat.call(this, apiHelper, i);
+                    returnData.push(...result);
+                } else if (resource === 'globalErrorHandler') {
+                    const result = await executeGlobalErrorHandler.call(this, apiHelper, i);
+                    returnData.push(...result);
+                } else if (resource === 'workflowHeartbeat') {
+                    const result = await executeWorkflowHeartbeat.call(this, apiHelper, i);
                     returnData.push(...result);
                 }
             } catch (error) {
