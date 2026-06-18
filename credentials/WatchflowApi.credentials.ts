@@ -21,14 +21,6 @@ export class WatchflowApi implements ICredentialType {
       description: "You can get API Key for Watchflow from https://app.watchflow.io",
       required: true,
     },
-    {
-      displayName: "API Base URL",
-      name: "baseUrl",
-      type: "string",
-      default: "https://api.watchflow.io",
-      description:
-        "Base URL of the Watchflow API. Leave as is for production; change only for testing against another environment (e.g. staging).",
-    },
   ];
 
   authenticate: IAuthenticateGeneric = {
@@ -42,7 +34,7 @@ export class WatchflowApi implements ICredentialType {
 
   test: ICredentialTestRequest = {
     request: {
-      baseURL: "={{$credentials.baseUrl || 'https://api.watchflow.io'}}",
+      baseURL: "https://api.watchflow.io",
       url: "/heartbeat/ping",
       method: "POST",
       headers: {

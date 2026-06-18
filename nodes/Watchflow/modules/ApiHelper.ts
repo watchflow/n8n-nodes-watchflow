@@ -15,11 +15,8 @@ export class ApiHelper {
         headers: IDataObject = {},
         option: IDataObject = {},
     ): Promise<any> {
-        const credentials = await this.executeFunctions.getCredentials('watchflowApi');
-        const baseUrl = ((credentials.baseUrl as string) || 'https://api.watchflow.io').replace(/\/+$/, '');
-
         const options: IHttpRequestOptions = {
-            url: `${baseUrl}/heartbeat${url}`,
+            url: `https://api.watchflow.io/heartbeat${url}`,
             method: method,
             body,
             headers: {

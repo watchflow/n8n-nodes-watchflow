@@ -19,9 +19,6 @@ services:
       # and fail to load silently. Point NODE_PATH at n8n's own node_modules.
       - NODE_PATH=/usr/local/lib/node_modules/n8n/node_modules
       - WATCHFLOW_API_KEY=${WATCHFLOW_API_KEY}
-      # Which Watchflow API to hit. Default production; set to
-      # https://api.stage.watchflow.io in your .env to test against staging.
-      - WATCHFLOW_BASE_URL=${WATCHFLOW_BASE_URL:-https://api.watchflow.io}
     volumes:
       - n8n_data:/home/node/.n8n
       - ./dist:/home/node/.n8n/custom/node_modules/@watchflow/n8n-nodes-watchflow

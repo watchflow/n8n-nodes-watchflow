@@ -13,8 +13,7 @@ echo "Setting up Watchflow API credentials..."
 
 # Create a temporary credentials file with the API key from environment variable
 if [ -n "$WATCHFLOW_API_KEY" ]; then
-  WATCHFLOW_BASE_URL="${WATCHFLOW_BASE_URL:-https://api.watchflow.io}"
-  echo "Injecting API key from environment variable (base URL: $WATCHFLOW_BASE_URL)..."
+  echo "Injecting API key from environment variable..."
   cat > /tmp/watchflow-credentials-temp.json <<EOF
 [
   {
@@ -22,8 +21,7 @@ if [ -n "$WATCHFLOW_API_KEY" ]; then
     "name": "Watchflow account",
     "type": "watchflowApi",
     "data": {
-      "apiKey": "$WATCHFLOW_API_KEY",
-      "baseUrl": "$WATCHFLOW_BASE_URL"
+      "apiKey": "$WATCHFLOW_API_KEY"
     }
   }
 ]
