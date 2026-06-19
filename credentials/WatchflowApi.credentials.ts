@@ -35,14 +35,8 @@ export class WatchflowApi implements ICredentialType {
   test: ICredentialTestRequest = {
     request: {
       baseURL: "https://api.watchflow.io",
-      url: "/heartbeat/ping",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: {
-        key: "n8n-credential-test",
-      },
+      url: "/heartbeat/auth",
+      method: "GET",
     },
   };
 }
