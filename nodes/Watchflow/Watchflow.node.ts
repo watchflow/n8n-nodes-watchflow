@@ -21,7 +21,7 @@ export class Watchflow implements INodeType {
         group: ['transform'],
         version: 1,
         description: 'Heartbeat monitoring for your cron jobs and scheduled tasks.',
-        subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
+        subtitle: '={{ ({ reportFailure: "Report a failed run", reportSuccess: "Report a successful run", ping: "Send a success ping", fail: "Send a failure ping", start: "Send a start ping" })[$parameter["operation"]] || $parameter["operation"] }}',
         defaults: {
             name: 'Watchflow (n8n Monitoring Suite)',
         },
