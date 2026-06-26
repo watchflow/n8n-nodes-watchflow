@@ -224,6 +224,32 @@ export class Watchflow implements INodeType {
                 description: 'Error message from the Error Trigger to log',
             },
             {
+                displayName: 'Execution ID',
+                name: 'executionId',
+                type: 'string',
+                default: '={{ $json.execution.id }}',
+                displayOptions: {
+                    show: {
+                        resource: ['workflowMonitoring'],
+                        operation: ['reportFailure'],
+                    },
+                },
+                description: 'Execution ID of the failed workflow from the Error Trigger. Leave empty to send none.',
+            },
+            {
+                displayName: 'Execution URL',
+                name: 'executionUrl',
+                type: 'string',
+                default: '={{ $json.execution.url }}',
+                displayOptions: {
+                    show: {
+                        resource: ['workflowMonitoring'],
+                        operation: ['reportFailure'],
+                    },
+                },
+                description: 'Link to the failed execution from the Error Trigger, shown as "View execution" in Watchflow. Requires n8n base URL (N8N_EDITOR_BASE_URL); leave empty to send none.',
+            },
+            {
                 displayName: 'Add your own metrics to send with each successful run, e.g. how many items were processed. Each value supports expressions, so you can pull dynamic data from the workflow. These show up on the monitor in Watchflow.',
                 name: 'reportSuccessNotice',
                 type: 'notice',
