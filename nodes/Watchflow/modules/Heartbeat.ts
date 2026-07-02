@@ -6,6 +6,7 @@ import {
 } from 'n8n-workflow';
 
 import { ApiHelper } from './ApiHelper';
+import { attachExecutionContext } from './ExecutionContext';
 
 export async function executeHeartbeat(
     this: IExecuteFunctions,
@@ -50,6 +51,8 @@ export async function executeHeartbeat(
     if (data && typeof data === 'object' && Object.keys(data).length > 0) {
         body.data = data;
     }
+
+    attachExecutionContext(this, body, itemIndex);
 
     const responseData = await apiHelper.request('POST', endpoint, body);
     const executionData = this.helpers.returnJsonArray(responseData);
