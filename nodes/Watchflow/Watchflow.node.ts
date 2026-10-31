@@ -21,10 +21,75 @@ export class Watchflow implements INodeType {
         group: ['transform'],
         version: 1,
         description: 'Heartbeat monitoring for your cron jobs and scheduled tasks.',
+        // Search aliases for the n8n node panel. n8n's node search only matches
+        // displayName (weight 1.3) and codex.alias (weight 1.0) — see DEFAULT_KEYS
+        // in @n8n/utils/src/search/sublime-search.ts. Neither the description nor
+        // the operation names are searched.
+        //
+        // Two rules follow from the scoring in that file:
+        //  - The score is the MAX across all aliases, never the sum, so extra
+        //    entries can only add matches and never dilute an existing one.
+        //  - Every character before the first match costs -20, so each alias
+        //    starts with the term it is meant to rank for. "Monitoring" and
+        //    "Cron Monitoring" therefore both need to be listed.
+        //
+        // The codex lives here inline rather than in a .node.json: the registry
+        // builds its entry from the node description, so file-only aliases stay
+        // invisible to users who have not installed the node yet.
+        codex: {
+            alias: [
+                'Watchflow',
+                'Watch Flow',
+                // How users describe the problem before they know the solution
+                'Error',
+                'Failed',
+                'Failure',
+                'Alert',
+                'Alerting',
+                'Downtime',
+                'Notification',
+                'Incident',
+                // How users describe the solution
+                'Monitoring',
+                'Monitor',
+                'Heartbeat',
+                'Ping',
+                'Cron',
+                'Uptime',
+                'Healthcheck',
+                'Health Check',
+                'Watchdog',
+                'Observability',
+                'Keepalive',
+                'Liveness',
+                // Multi-word queries, which single-word aliases lose on
+                'Cron Monitoring',
+                'Cron Job Monitoring',
+                'Job Monitoring',
+                'Workflow Monitoring',
+                'Workflow Failed',
+                'Failed Workflow',
+                'Error Alert',
+                'Error Handler',
+                'Error Workflow',
+                'Failure Alert',
+                'Silent Failure',
+                'Dead Man Switch',
+                "Dead Man's Switch",
+                'Deadman Switch',
+                'Schedule Monitoring',
+                'Scheduled Task Monitoring',
+                'Execution Monitoring',
+                'Last Execution',
+            ],
+        },
         subtitle: '={{ ({ reportFailure: "Report a failed run", reportSuccess: "Report a successful run", ping: "Send a success ping", fail: "Send a failure ping", start: "Send a start ping" })[$parameter["operation"]] || $parameter["operation"] }}',
         defaults: {
             name: 'Watchflow (n8n Monitoring Suite)',
         },
+        // Also lists the node in the AI Agent's tool picker, a second surface
+        // the node search does not cover.
+        usableAsTool: true,
         inputs: [NodeConnectionType.Main],
         outputs: [NodeConnectionType.Main],
         credentials: [
