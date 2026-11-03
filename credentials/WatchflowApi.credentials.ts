@@ -8,8 +8,8 @@ import {
 
 export class WatchflowApi implements ICredentialType {
   name = "watchflowApi";
-  displayName = "Watchflow (n8n Monitoring Suite) API";
-  icon: Icon = "file:watchflow.svg";
+  displayName = "Watchflow API";
+  icon: Icon = { light: "file:watchflow.svg", dark: "file:watchflow.dark.svg" };
   documentationUrl = "https://www.watchflow.io/api/";
   properties: INodeProperties[] = [
     {

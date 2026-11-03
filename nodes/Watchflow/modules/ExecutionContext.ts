@@ -25,7 +25,7 @@ export function attachExecutionContext(
         if (typeof evaluated === 'string' && /^https?:\/\//.test(evaluated.trim())) {
             executionUrl = evaluated.trim();
         }
-    } catch (e) {
+    } catch {
         executionUrl = undefined;
     }
     if (executionUrl) { body.executionUrl = executionUrl; }

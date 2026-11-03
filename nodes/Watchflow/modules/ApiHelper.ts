@@ -14,7 +14,7 @@ export class ApiHelper {
         body?: IDataObject,
         headers: IDataObject = {},
         option: IDataObject = {},
-    ): Promise<any> {
+    ): Promise<IDataObject> {
         const options: IHttpRequestOptions = {
             url: `https://api.watchflow.io/heartbeat${url}`,
             method: method,

@@ -23,7 +23,7 @@ export async function executeWorkflowHeartbeat(
     if (workflow.name) { body.name = workflow.name; }
 
     const properties = this.getNodeParameter('properties', itemIndex, {}) as {
-        property?: Array<{ name: string; value: any }>;
+        property?: Array<{ name: string; value: IDataObject[string] }>;
     };
 
     const data: IDataObject = {};

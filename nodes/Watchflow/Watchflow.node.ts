@@ -17,7 +17,7 @@ export class Watchflow implements INodeType {
     description: INodeTypeDescription = {
         displayName: 'Watchflow (n8n Monitoring Suite)',
         name: 'watchflow',
-        icon: 'file:watchflow.svg',
+        icon: { light: 'file:watchflow.svg', dark: 'file:watchflow.dark.svg' },
         group: ['transform'],
         version: 1,
         description: 'Heartbeat monitoring for your cron jobs and scheduled tasks.',
@@ -36,26 +36,22 @@ export class Watchflow implements INodeType {
         // The codex lives here inline rather than in a .node.json: the registry
         // builds its entry from the node description, so file-only aliases stay
         // invisible to users who have not installed the node yet.
+        //
+        // Only terms that describe Watchflow itself belong here. Generic n8n
+        // terms (Error, Failed, Alert, Notification, Error Workflow, ...) are
+        // rejected by the n8n community node review because they make the node
+        // rank for searches aimed at built-in nodes such as the Error Trigger.
         codex: {
             alias: [
                 'Watchflow',
                 'Watch Flow',
-                // How users describe the problem before they know the solution
-                'Error',
-                'Failed',
-                'Failure',
-                'Alert',
-                'Alerting',
-                'Downtime',
-                'Notification',
-                'Incident',
-                // How users describe the solution
                 'Monitoring',
                 'Monitor',
                 'Heartbeat',
                 'Ping',
                 'Cron',
                 'Uptime',
+                'Downtime',
                 'Healthcheck',
                 'Health Check',
                 'Watchdog',
@@ -67,20 +63,12 @@ export class Watchflow implements INodeType {
                 'Cron Job Monitoring',
                 'Job Monitoring',
                 'Workflow Monitoring',
-                'Workflow Failed',
-                'Failed Workflow',
-                'Error Alert',
-                'Error Handler',
-                'Error Workflow',
-                'Failure Alert',
-                'Silent Failure',
-                'Dead Man Switch',
-                "Dead Man's Switch",
-                'Deadman Switch',
                 'Schedule Monitoring',
                 'Scheduled Task Monitoring',
                 'Execution Monitoring',
-                'Last Execution',
+                'Dead Man Switch',
+                "Dead Man's Switch",
+                'Deadman Switch',
             ],
         },
         subtitle: '={{ ({ reportFailure: "Report a failed run", reportSuccess: "Report a successful run", ping: "Send a success ping", fail: "Send a failure ping", start: "Send a start ping" })[$parameter["operation"]] || $parameter["operation"] }}',
@@ -209,7 +197,7 @@ export class Watchflow implements INodeType {
                         resource: ['heartbeat'],
                     },
                 },
-                description: 'Expected heartbeat interval (e.g., "5m", "1h", "24h"). Default: 24h',
+                description: 'Expected heartbeat interval (e.g., "5m", "1h", "24h"). Default: 24h.',
             },
             {
                 displayName: 'Error Message',
@@ -227,14 +215,42 @@ export class Watchflow implements INodeType {
             {
                 displayName: 'Additional Data',
                 name: 'data',
-                type: 'json',
-                default: '{}',
+                type: 'fixedCollection',
+                typeOptions: {
+                    multipleValues: true,
+                },
+                default: {},
+                placeholder: 'Add Property',
                 displayOptions: {
                     show: {
                         resource: ['heartbeat'],
                     },
                 },
-                description: 'Custom metrics or metadata (JSON object)',
+                description: 'Custom metrics or metadata sent with the ping. Each value supports expressions for dynamic data.',
+                options: [
+                    {
+                        name: 'property',
+                        displayName: 'Property',
+                        values: [
+                            {
+                                displayName: 'Name',
+                                name: 'name',
+                                type: 'string',
+                                default: '',
+                                placeholder: 'e.g. itemsProcessed',
+                                description: 'Name of the property as it appears in Watchflow',
+                            },
+                            {
+                                displayName: 'Value',
+                                name: 'value',
+                                type: 'string',
+                                default: '',
+                                placeholder: '={{ $input.all().length }}',
+                                description: 'Value of the property. Supports expressions, e.g. ={{ $input.all().length }} for the number of incoming items.',
+                            },
+                        ],
+                    },
+                ],
             },
             {
                 displayName: 'Connect an <b>Error Trigger</b> node to this node. Add the Error Trigger to your workflow (or set it as the workflow\'s error workflow) so the failed workflow and its error message are pulled in automatically.',
@@ -368,7 +384,7 @@ export class Watchflow implements INodeType {
                                 type: 'string',
                                 default: '',
                                 placeholder: '={{ $input.all().length }}',
-                                description: 'Value of the metric. Supports expressions, e.g. ={{ $input.all().length }} for the number of incoming items',
+                                description: 'Value of the metric. Supports expressions, e.g. ={{ $input.all().length }} for the number of incoming items.',
                             },
                         ],
                     },
@@ -401,7 +417,7 @@ export class Watchflow implements INodeType {
                 }
             } catch (error) {
                 if (this.continueOnFail()) {
-                    returnData.push({ json: { error: (error as any).message }, pairedItem: { item: i } });
+                    returnData.push({ json: { error: (error as Error).message }, pairedItem: { item: i } });
                     continue;
                 }
                 throw new NodeApiError(this.getNode(), error as JsonObject, { itemIndex: i });

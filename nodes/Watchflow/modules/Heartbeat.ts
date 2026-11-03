@@ -39,16 +39,8 @@ export async function executeHeartbeat(
     const name = this.getNodeParameter('name', itemIndex, '') as string;
     if (name) { body.name = name; }
 
-    let data = this.getNodeParameter('data', itemIndex, {}) as any;
-    if (typeof data === 'string') {
-        try {
-            data = JSON.parse(data);
-        } catch (error) {
-            throw new NodeOperationError(this.getNode(), 'The "Additional Data" field must be a valid JSON object.', { itemIndex });
-        }
-    }
-
-    if (data && typeof data === 'object' && Object.keys(data).length > 0) {
+    const data = parseAdditionalData(this, itemIndex);
+    if (Object.keys(data).length > 0) {
         body.data = data;
     }
 
@@ -61,4 +53,35 @@ export async function executeHeartbeat(
         ...item,
         pairedItem: { item: itemIndex },
     }));
+}
+
+/**
+ * Reads the "Additional Data" parameter. Since 0.16.0 it is a fixedCollection
+ * of name/value pairs. Workflows saved with earlier versions still carry the
+ * old JSON string (or a plain object), so those shapes are accepted as well.
+ */
+function parseAdditionalData(ctx: IExecuteFunctions, itemIndex: number): IDataObject {
+    let raw = ctx.getNodeParameter('data', itemIndex, {}) as unknown;
+
+    if (typeof raw === 'string') {
+        if (raw.trim() === '') { return {}; }
+        try {
+            raw = JSON.parse(raw);
+        } catch {
+            throw new NodeOperationError(ctx.getNode(), 'The "Additional Data" field must be a valid JSON object.', { itemIndex });
+        }
+    }
+
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) { return {}; }
+
+    const collection = raw as { property?: Array<{ name: string; value: unknown }> };
+    if (Array.isArray(collection.property)) {
+        const data: IDataObject = {};
+        for (const entry of collection.property) {
+            if (entry.name) { data[entry.name] = entry.value as IDataObject[string]; }
+        }
+        return data;
+    }
+
+    return raw as IDataObject;
 }

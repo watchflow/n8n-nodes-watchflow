@@ -26,7 +26,7 @@ Monitor your scheduled tasks and cron jobs.
 - **Monitor Key**: A unique identifier for your monitor (e.g., `daily-backup`).
 - **Monitor Name**: A human-readable name for your monitor.
 - **Interval**: Expected heartbeat interval (e.g., `5m`, `1h`, `24h`).
-- **Additional Data**: Custom metrics or metadata as a JSON object.
+- **Additional Data**: Custom metrics or metadata as name/value pairs. Values support expressions.
 - **Error Message**: Description of why the job failed (only for Error operation).
 
 📚 **[Learn n8n monitoring best practices](https://www.watchflow.io/use-cases/n8n-monitoring/)**
