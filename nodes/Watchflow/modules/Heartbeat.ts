@@ -56,9 +56,11 @@ export async function executeHeartbeat(
 }
 
 /**
- * Reads the "Additional Data" parameter. Since 0.16.0 it is a fixedCollection
- * of name/value pairs. Workflows saved with earlier versions still carry the
- * old JSON string (or a plain object), so those shapes are accepted as well.
+ * Reads the "Additional Data" parameter. On node version 1 it is a JSON field
+ * (a string, or an object when set through an expression); on version 2 it is
+ * a fixedCollection of name/value pairs. The shape is detected from the value
+ * rather than the version, so a version 1 node that was saved with the
+ * collection shape is handled as well.
  */
 function parseAdditionalData(ctx: IExecuteFunctions, itemIndex: number): IDataObject {
     let raw = ctx.getNodeParameter('data', itemIndex, {}) as unknown;

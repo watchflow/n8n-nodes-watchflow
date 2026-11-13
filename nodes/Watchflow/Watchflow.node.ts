@@ -19,7 +19,11 @@ export class Watchflow implements INodeType {
         name: 'watchflow',
         icon: { light: 'file:watchflow.svg', dark: 'file:watchflow.dark.svg' },
         group: ['transform'],
-        version: 1,
+        // Version 2 replaced the JSON "Additional Data" field of the generic
+        // heartbeat with a name/value collection. Workflows saved on version 1
+        // keep the JSON field, so their stored value is still resolved.
+        version: [1, 2],
+        defaultVersion: 2,
         description: 'Heartbeat monitoring for your cron jobs and scheduled tasks.',
         // Search aliases for the n8n node panel. n8n's node search only matches
         // displayName (weight 1.3) and codex.alias (weight 1.0) — see DEFAULT_KEYS
@@ -215,6 +219,19 @@ export class Watchflow implements INodeType {
             {
                 displayName: 'Additional Data',
                 name: 'data',
+                type: 'json',
+                default: '{}',
+                displayOptions: {
+                    show: {
+                        '@version': [1],
+                        resource: ['heartbeat'],
+                    },
+                },
+                description: 'Custom metrics or metadata (JSON object)',
+            },
+            {
+                displayName: 'Additional Data',
+                name: 'data',
                 type: 'fixedCollection',
                 typeOptions: {
                     multipleValues: true,
@@ -223,6 +240,7 @@ export class Watchflow implements INodeType {
                 placeholder: 'Add Property',
                 displayOptions: {
                     show: {
+                        '@version': [2],
                         resource: ['heartbeat'],
                     },
                 },
